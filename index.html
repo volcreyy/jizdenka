@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>Generátor jízdenky ČD</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+  <header>
+    <img src="logoCD.png" alt="Logo ČD" class="logo">
+    <h1>Generátor stylizované jízdenky ČD</h1>
+  </header>
+
+  <main>
+    <div class="form-container">
+      <label>Jméno: <input type="text" id="name"></label>
+      <label>Odkud: <input list="stations" id="from"></label>
+      <label>Kam: <input list="stations" id="to"></label>
+
+      <label>Přes:
+        <input list="stations" type="text" id="viaInput">
+        <button type="button" onclick="addVia()">Přidat zastávku</button>
+        <button type="button" onclick="clearVia()">Vymazat zastávky</button>
+      </label>
+      <input type="text" id="via" readonly>
+
+      <label>Datum: <input type="date" id="date"></label>
+      <label>Čas odjezdu: <input type="time" id="time"></label>
+      <label>Čas příjezdu: <input type="time" id="arrivalTime"></label>
+
+      <label>Třída:
+        <select id="class">
+          <option value="1">1</option>
+          <option value="2" selected>2</option>
+        </select>
+      </label>
+
+      <label>Typ rezervace:
+        <select id="reservation">
+          <option value="Obyčejná">Obyčejná</option>
+          <option value="Business">Business</option>
+        </select>
+      </label>
+
+      <label>Vlak:
+        <select id="trainType">
+          <option value="Os">Os</option>
+          <option value="Sp">Sp</option>
+          <option value="R">R</option>
+          <option value="IC">IC</option>
+          <option value="EC">EC</option>
+          <option value="Sc">Sc</option>
+          <option value="rj">rj</option>
+          <option value="rjx">rjx</option>
+          <option value="ICE">ICE</option>
+        </select>
+        <input type="number" id="trainNumber" min="0" max="9999">
+        <button type="button" onclick="addTrain()">Přidat vlak</button>
+        <button type="button" onclick="clearTrains()">Vymazat vlaky</button>
+      </label>
+      <input type="text" id="train" readonly>
+
+      <div id="reservationSeats"></div>
+      <button type="button" onclick="saveSeats()">Uložit sedadla</button>
+
+      <label>Sedadlo: <input type="text" id="seat"></label>
+      <label>Cena: <input type="text" id="price"></label>
+      <button onclick="generateTicket()">Vygenerovat jízdenku</button>
+
+      <datalist id="stations"></datalist>
+    </div>
+
+    <div id="ticket" class="ticket" style="display:none">
+      <div class="ticket-header">
+        <img src="logoCD.png" alt="Logo ČD" class="ticket-logo">
+        <div class="ticket-title">JÍZDENKA A MÍSTENKA</div>
+      </div>
+
+      <div class="ticket-section">
+        <div><strong>Doklad číslo:</strong> <span id="dokladCislo"></span></div>
+        <div><strong>Jméno:</strong> <span id="outName"></span></div>
+        <div><strong>Kód transakce:</strong> <span id="kodTransakce"></span></div>
+      </div>
+
+      <div class="row">
+        <div class="box"><strong>Z:</strong> <span id="outFrom"></span></div>
+        <div class="box"><strong>DO:</strong> <span id="outTo"></span></div>
+      </div>
+
+      <div class="big-box"><strong>PŘES:</strong> <span id="outVia"></span></div>
+
+      <div class="row">
+        <div class="box"><strong>Datum:</strong> <span id="outDate"></span></div>
+        <div class="box"><strong>Čas odjezdu:</strong> <span id="outTime"></span></div>
+      </div>
+
+      <div class="box"><strong>Čas příjezdu:</strong> <span id="outArrivalTime"></span></div>
+
+      <div class="row">
+        <div class="box"><strong>Třída:</strong> <span id="outClass"></span></div>
+        <div class="box"><strong>Rezervace:</strong> <span id="outReservation"></span></div>
+      </div>
+
+      <div class="row">
+        <div class="box"><strong>Vlak:</strong> <span id="outTrain"></span></div>
+        <div class="box"><strong>Sedadlo:</strong> <span id="outSeat"></span></div>
+      </div>
+
+      <div class="box"><strong>Cena:</strong> <span id="outPrice"></span></div>
+
+      <div class="static-text">Platí jen ve vlacích ČD.</div>
+      <div class="static-text"><em>Jízdenka platná od <span id="validFrom"></span> do <span id="validTo"></span>.</em></div>
+
+      <div class="disclaimer">
+        Doklad je nepřenosný a platí pouze ve spojení s průkazem totožnosti cestujícího uvedeného na jízdence.
+      </div>
+
+      <div class="barcode">
+        <div id="barcodeCode"></div>
+        <canvas id="qrcode"></canvas>
+      </div>
+
+      <div class="ad">
+        <img src="reklamaCD.png" alt="Reklama ČD">
+      </div>
+    </div>
+  </main>
+
+  <script src="stations.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
